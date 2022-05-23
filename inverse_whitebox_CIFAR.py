@@ -45,8 +45,8 @@ def inverse(DATASET = 'CIFAR10', network = 'CIFAR10CNN', NIters = 500, imageWidt
         AMSGrad = True, model_dir = "checkpoints/CIFAR10/", model_name = "ckpt.pth",
         save_img_dir = "inverted/CIFAR10/MSE_TV/", saveIter = 10, gpu = True, validation=False):
 
-    print "DATASET: ", DATASET
-    print "inverseClass: ", inverseClass
+    print ("DATASET: ", DATASET)
+    print ("inverseClass: ", inverseClass)
 
     assert inverseClass < NClasses
 
@@ -76,13 +76,13 @@ def inverse(DATASET = 'CIFAR10', network = 'CIFAR10CNN', NIters = 500, imageWidt
                                        download=True, transform = tsf['test'])
 
 
-    print "len(trainset) ", len(trainset)
-    print "len(testset) ", len(testset)
+    print ("len(trainset) ", len(trainset))
+    print ("len(testset) ", len(testset))
     x_train, y_train = trainset.data, trainset.targets,
     x_test, y_test = testset.data, testset.targets,
 
-    print "x_train.shape ", x_train.shape
-    print "x_test.shape ", x_test.shape
+    print ("x_train.shape ", x_train.shape)
+    print ("x_test.shape ", x_test.shape)
 
 
     trainloader = torch.utils.data.DataLoader(trainset, batch_size = 1,
@@ -100,12 +100,12 @@ def inverse(DATASET = 'CIFAR10', network = 'CIFAR10CNN', NIters = 500, imageWidt
         net = net.cpu()
 
     net.eval()
-    print "Validate the model accuracy..."
+    print ("Validate the model accuracy...")
     if validation:
         accTest = evalTest(testloader, net, gpu = gpu)
 
     targetImg, _ = getImgByClass(inverseIter, C = inverseClass)
-    print "targetImg.size()", targetImg.size()
+    print ("targetImg.size()", targetImg.size())
 
     deprocessImg = deprocess(targetImg.clone())
 
@@ -127,7 +127,7 @@ def inverse(DATASET = 'CIFAR10', network = 'CIFAR10CNN', NIters = 500, imageWidt
         targetLayer = net.layerDict[layer]
         refFeature = net.getLayerOutput(targetImg, targetLayer)
 
-    print "refFeature.size()", refFeature.size()
+    print ("refFeature.size()", refFeature.size())
 
     if gpu:
         xGen = torch.zeros(targetImg.size(), requires_grad = True, device="cuda")
@@ -159,18 +159,18 @@ def inverse(DATASET = 'CIFAR10', network = 'CIFAR10CNN', NIters = 500, imageWidt
         totalLoss.backward(retain_graph=True)
         optimizer.step()
 
-        print "Iter ", i, "Feature loss: ", featureLoss.cpu().detach().numpy(), "TVLoss: ", TVLoss.cpu().detach().numpy(), "l2Loss: ", normLoss.cpu().detach().numpy()
+        print ("Iter ", i, "Feature loss: ", featureLoss.cpu().detach().numpy(), "TVLoss: ", TVLoss.cpu().detach().numpy(), "l2Loss: ", normLoss.cpu().detach().numpy())
 
     # save the final result
     imgGen = xGen.clone()
     imgGen = deprocess(imgGen)
     torchvision.utils.save_image(imgGen, save_img_dir + str(inverseClass) + '-inv.png')
 
-    print "targetImg l1 Stat:"
+    print ("targetImg l1 Stat:")
     getL1Stat(net, targetImg)
-    print "xGen l1 Stat:"
+    print ("xGen l1 Stat:")
     getL1Stat(net, xGen)
-    print "Done"
+    print ("Done")
 
 
 if __name__ == '__main__':
@@ -223,7 +223,7 @@ if __name__ == '__main__':
             NClasses = 10
 
         else:
-            print "No Dataset Found"
+            print ("No Dataset Found")
             exit()
 
         for c in range(NClasses):

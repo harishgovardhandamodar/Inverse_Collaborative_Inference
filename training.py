@@ -120,7 +120,7 @@ def train(DATASET = 'CIFAR10', network = 'CIFAR10CNN', NEpochs = 200, imageWidth
     for epoch in range(NEpochs):
         lossTrain = 0.0
         accTrain = 0.0
-        for i in range(NBatch):
+        for i in range(int(NBatch)):
             try:
                 batchX, batchY = trainIter.next()
             except StopIteration:
